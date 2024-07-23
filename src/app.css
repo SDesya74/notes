@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    /* a container for a notes, may need refactoring to adapt for big screens */
+    .container-sm {
+        width: 100%;
+    }
+
+    @media (min-width: 640px) {
+        .container-sm {
+            max-width: 640px;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .container-sm {
+            max-width: 768px;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .container-sm {
+            max-width: 768px;
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .container-sm {
+            max-width: 1024px;
+        }
+    }
+
+    @media (min-width: 1536px) {
+        .container-sm {
+            max-width: 1280px;
+        }
+    }
+}

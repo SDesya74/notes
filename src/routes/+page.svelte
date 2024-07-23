@@ -53,14 +53,12 @@
     }
 </script>
 
-<main class="flex flex-col p-4 gap-4 items-center">
-    <div class="flex flex-col-reverse gap-4" style="width: 65ch;">
+<main class="flex flex-col p-2 gap-4 items-center">
+    <div class="flex flex-col-reverse gap-4 container-sm">
         {#each currentChat as message (message.id)}
             <MessageView value={message} {newTopic}></MessageView>
         {/each}
     </div>
-
-    <hr />
 
     <!-- TODO: Fullsize note editor on a separate page or in a bottom sheet -->
     <form class="flex flex-row gap-4 justify-stretch align-stretch">

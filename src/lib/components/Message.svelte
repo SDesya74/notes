@@ -11,7 +11,7 @@
     let topicStarted = $derived(value.children.size > 1)
 </script>
 
-<div class="flex flex-col" style="width: 65ch">
+<div class="flex flex-col w-full">
     <div class="rounded bg-gray-200" class:bg-red-300={topicStarted}>
         <div class="flex flex-row px-1">
             <div class="text-gray-50">{value.id}</div>
