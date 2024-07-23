@@ -1,84 +1,67 @@
 <script lang="ts">
-  import { nanoid } from "nanoid"
   import MessageView from "$lib/components/Message.svelte"
-  import type { Id, Message } from "$lib"
+  import {
+    addMessage,
+    chatFrom,
+    createMessageFrom,
+    lastMessage,
+    type Id,
+  } from "$lib/index.svelte"
+  import { page } from "$app/stores"
+  import { goto } from "$app/navigation"
+  import { browser } from "$app/environment"
 
-  let messages: { [id: Id]: Message } = {}
+  let last = lastMessage()
 
-  function createMessageFrom(parent: Id | null, text: string): Message {
-    return {
-      id: nanoid(),
-      text,
-      parent,
-      children: [],
-    }
+  if (browser && $page.url.hash === "" && last !== null) {
+    let url = $page.url
+    url.hash = last.id
+    console.log("got hash", url.hash)
+    goto(url)
+    // TODO: Show a 404 page when a message with last id was not found
   }
 
-  function addMessage(message: Message) {
-    messages[message.id] = message
+  let currentChat = $state(last ? chatFrom(last.id, 15) : [])
+  let currentBranchLastId = $derived(currentChat[0]?.id ?? null)
 
-    if (message.parent) {
-      messages[message.parent].children.push(message.id)
-    }
-  }
-
-  function chatFrom(id: Id, count: number = 10): Message[] {
-    let out = []
-    let iter_id: Id | null = id
-    while (count-- > 0) {
-      let message: Message = messages[iter_id!]
-      if (!message) break
-      iter_id = message.parent
-      out.push(message)
-    }
-
-    return out
-  }
-
-  let initial = createMessageFrom(null, "Hello World!")
-
-  let branch1 = createMessageFrom(initial.id, "Branch 1")
-  let branch2 = createMessageFrom(initial.id, "Branch 2")
-
-  addMessage(initial)
-  addMessage(branch1)
-  addMessage(branch2)
-
-  let b1 = branch1.id
-  for (let i = 0; i < 10; i++) {
-    let m = createMessageFrom(b1, `Message ${i}`)
-    b1 = m.id
-    addMessage(m)
-  }
-
-  let b2 = branch2.id
-  for (let i = 0; i < 10; i++) {
-    let m = createMessageFrom(b2, `Message ${i}`)
-    b2 = m.id
-    addMessage(m)
-  }
-
-  let currentChat = $state(chatFrom(b1, 15))
-
-  let currentBranchLastId = $derived(currentChat[0].id)
-
-  let textInput: string = $state("")
+  let textInput = $state("")
+  let textInputElement: HTMLTextAreaElement | null = $state(null)
 
   function newMessage() {
-    console.log({ textInput })
     let message = createMessageFrom(currentBranchLastId, textInput)
     addMessage(message)
     currentChat = chatFrom(message.id, 15)
+    textInput = ""
+    setTimeout(() => textInputElement!.focus(), 0)
+  }
+
+  function newTopic(parent: Id) {
+    console.log("new topic from", parent)
   }
 </script>
 
-<main class="flex flex-col-reverse p-4 gap-4">
-  {#each currentChat as message}
-    <MessageView value={message}></MessageView>
-  {/each}
-
-  <div class="flex flex-row">
-    <input type="text" bind:value={textInput} />
-    <button onclick={newMessage}>Send</button>
+<main class="flex flex-col p-4 gap-4 items-center">
+  <div class="flex flex-col-reverse gap-4" style="width: 65ch;">
+    {#each currentChat as message}
+      <MessageView value={message} {newTopic}></MessageView>
+    {/each}
   </div>
+
+  <hr />
+
+  <form action="" class="flex flex-row gap-4 justify-stretch align-stretch">
+    <label>
+      <textarea
+        class="outline outline-2 rounded-sm outline-blue-100 h-full"
+        placeholder="New note"
+        bind:this={textInputElement}
+        bind:value={textInput}
+      ></textarea>
+    </label>
+    <button
+      type="submit"
+      class="bg-blue-100 rounded-sm px-4 py-1"
+      onclick={newMessage}>Send</button
+    >
+  </form>
 </main>

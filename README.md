@@ -4,10 +4,12 @@ A PoC of a graph/tree based notes app. It's like a mind map or obsidian graph bu
 
 ## Features
 
-- [ ] Extending a topic (tree leaf)
+- [x] Extending a topic (tree leaf)
 - [ ] Creating a new topic from a message
 - [ ] Moving between topics (requires some kind of a graph view)
 - [ ] Import, Export and saving in a local storage
+- [x] Markdown support
+- [ ] Interactive markdown (checkboxes and plugins)
 - [ ] Design
   - [ ] Color and name for each topic
   - [ ] Good messages design
