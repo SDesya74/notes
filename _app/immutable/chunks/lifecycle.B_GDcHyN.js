@@ -1,0 +1,1 @@
+import{z as r,d as e,c,A as a,u as i,B as u,v as l,C as _}from"./runtime.ghMM8PmF.js";function m(){const s=c,n=s.l.u;n&&(n.b.length&&r(()=>{f(s),a(n.b)}),e(()=>{const o=i(()=>n.m.map(u));return()=>{for(const t of o)typeof t=="function"&&t()}}),n.a.length&&e(()=>{f(s),a(n.a)}))}function f(s){if(s.l.s)for(const n of s.l.s)l(n);_(s.s)}export{m as i};
