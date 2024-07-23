@@ -1,11 +1,28 @@
 import { nanoid } from 'nanoid'
 
+export type Id = string
+interface IdProvider {
+    next(): Id
+}
+
+const NANOID_PROVIDER: IdProvider = {
+    next() {
+        return nanoid()
+    },
+}
+
+class IncrementProvider implements IdProvider {
+    id = 0
+    next() {
+        return (this.id++).toString()
+    }
+}
+const INCREMENT_PROVIDER: IdProvider = new IncrementProvider()
+
 export type MessageData = {
     content: string
     createdAt: number
 }
-
-export type Id = string
 
 export type Message = {
     data: MessageData
@@ -25,6 +42,8 @@ export function createMessage(text: string): MessageData {
 class Messages {
     messages: { [id: Id]: Message } = {}
 
+    constructor(private id_provider: IdProvider = NANOID_PROVIDER) {}
+
     insert(id: Id, message: MessageData) {
         const inner = {
             data: message,
@@ -37,7 +56,7 @@ class Messages {
     }
 
     add(parent: Id | null, message: MessageData): Id {
-        const id = nanoid()
+        const id = this.id_provider.next()
 
         this.insert(id, message)
 
@@ -109,7 +128,7 @@ class Messages {
     }
 }
 
-export const messages = $state(new Messages())
+export const messages = $state(new Messages(INCREMENT_PROVIDER))
 
 type ExportedMessages = {
     // child to parent map
