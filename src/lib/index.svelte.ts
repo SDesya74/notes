@@ -1,60 +1,120 @@
-// place files you want to import through the `$lib` alias in this folder.
+import { nanoid } from 'nanoid'
 
-import { nanoid } from "nanoid"
+export type MessageData = {
+    content: string
+    createdAt: number
+}
 
 export type Id = string
 
 export type Message = {
-  content: string
-  id: Id
-  createdAt: number
-  parent: Id | null
-  children: Id[]
+    data: MessageData
+
+    id: Id
+    parent: Id | null
+    children: Set<Id>
 }
 
-export const messages: { [id: Id]: Message } = {}
-
-export function createMessageFrom(parent: Id | null, text: string): Message {
-  return {
-    id: nanoid(),
-    createdAt: Date.now(),
-    content: text,
-    parent,
-    children: [],
-  }
+export function createMessage(text: string): MessageData {
+    return {
+        content: text,
+        createdAt: Date.now(),
+    }
 }
 
-export function addMessage(message: Message) {
-  messages[message.id] = message
+class Messages {
+    messages: { [id: Id]: Message } = {}
 
-  if (message.parent) {
-    messages[message.parent].children.push(message.id)
-  }
+    insert(id: Id, message: MessageData) {
+        const inner = {
+            data: message,
+            id,
+            children: new Set<Id>(),
+            parent: null,
+        }
+
+        this.messages[id] = inner
+    }
+
+    add(parent: Id | null, message: MessageData): Id {
+        const id = nanoid()
+
+        this.insert(id, message)
+
+        if (parent) this.link(parent, id)
+
+        return id
+    }
+
+    get length(): number {
+        return Object.keys(this.messages).length
+    }
+
+    link(parent: Id, child: Id) {
+        this.messages[parent].children.add(child)
+        this.messages[child].parent = parent
+    }
+
+    chatFrom(id: Id, count: number = 20): Message[] {
+        const out = []
+        let iter_id: Id | null = id
+        while (count-- > 0) {
+            const message: Message = this.messages[iter_id!]
+            if (!message) break
+            iter_id = message.parent
+            out.push(message)
+        }
+
+        return out
+    }
+
+    lastCreatedAt(): Message | null {
+        const msgs = Object.values(this.messages)
+
+        if (msgs.length < 1) {
+            return null
+        }
+
+        return msgs.reduce((prev, current) =>
+            prev.data.createdAt > current.data.createdAt ? prev : current
+        )
+    }
+
+    export(): ExportedMessages {
+        const links: ExportedMessages['links'] = {}
+        const messages: ExportedMessages['messages'] = {}
+
+        for (const message of Object.values(this.messages)) {
+            messages[message.id] = message.data
+
+            if (!message.parent) continue
+            links[message.id] = message.parent
+        }
+
+        return { links, messages }
+    }
+
+    import(exported: ExportedMessages) {
+        for (const [id, data] of Object.entries(exported.messages)) {
+            this.insert(id, data)
+        }
+
+        for (const [child, parent] of Object.entries(exported.links)) {
+            this.link(parent, child)
+        }
+    }
+
+    clear() {
+        this.messages = {}
+    }
 }
 
-export function chatFrom(id: Id, count: number = 10): Message[] {
-  let out = []
-  let iter_id: Id | null = id
-  while (count-- > 0) {
-    let message: Message = messages[iter_id!]
-    if (!message) break
-    iter_id = message.parent
-    out.push(message)
-  }
+export const messages = $state(new Messages())
 
-  return out
-}
-
-export function lastMessage(): Message | null {
-  let msgs = Object.values(messages)
-
-  if (msgs.length < 1) {
-    return null
-  }
-
-  return msgs.reduce((prev, current) =>
-    prev.createdAt < current.createdAt ? prev : current
-  )
+type ExportedMessages = {
+    // child to parent map
+    links: { [child: Id]: Id }
+    messages: { [id: Id]: MessageData }
 }
 
 // TODO: proper api for message storage
