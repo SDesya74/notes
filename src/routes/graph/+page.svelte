@@ -1,6 +1,7 @@
 <script lang='ts'>
     import { onMount } from "svelte";
     import Note from "../../lib/components/Note.svelte";
+    import Line from "../../lib/components/Line.svelte";
     
     let links = { 0: "0", 1: "0", 2: "1", 3: "2", 4: "2" };
     let messages = {
@@ -50,33 +51,30 @@
     }
   </script>
   
-  <style>
-    .node {
-      cursor: pointer;
-    }
-  </style>
-  
   <div class="flex flex-col px-12 pt-5">
-    <div class="border border-black" on:mousemove={onMouseMove} on:mouseup={onMouseUp} style="width: 600px; height: 600px; position: relative;" role="button" tabindex="0">
-      <svg width="100%" height="100%" role="img">
-        {#each Object.keys(links) as index}
-          <line
-            x1={positions[links[index]].x+50}
-            y1={positions[links[index]].y+50}
-            x2={positions[index].x+50}
-            y2={positions[index].y}
-            stroke="black"
-          />
-        {/each}
-        {#each Object.keys(messages) as index}
-          <Note
+    <div
+      class="border border-black"
+      on:mousemove={onMouseMove}
+      on:mouseup={onMouseUp}
+      style="width: 600px; height: 600px; position: relative;"
+      role="button"
+      tabindex="0"
+    >
+      {#each Object.keys(links) as index}
+        <Line
+            posIndexX={positions[index].x}
+            posIndexY={positions[index].y}
+            posLinksX={positions[links[index]].x}
+            posLinksY={positions[links[index]].y}
+        />
+      {/each}
+      {#each Object.keys(messages) as index}
+        <Note
             posX={positions[index].x}
             posY={positions[index].y}
             message={messages[index].content}
             onMouseDown={(event) => onMouseDown(event, index)}
-            />
-        {/each}
-      </svg>
+        />
+      {/each}
     </div>
   </div>
-  
