@@ -1,36 +1,35 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="./favicon.png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		
-		<link href="./_app/immutable/assets/0.sHyIHInW.css" rel="stylesheet">
-		<link rel="modulepreload" href="./_app/immutable/entry/start.AD8QA6-O.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/entry.D1VjjG8I.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/runtime.ghMM8PmF.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/index.BENhzCTp.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/environment.D58AuKNM.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/app.DZxtT6Nr.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/render.FY2nDar_.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/template.CptAR0ur.js">
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" href="./favicon.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<script>
+		if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+			document.documentElement.classList.add('dark')
+		} else {
+			document.documentElement.classList.remove('dark')
+		}
+		console.log({ dark: document.documentElement.classList.contains('dark') })
+	</script>
+	
+		<link rel="modulepreload" href="./_app/immutable/entry/start.BZl4OMJy.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/entry.Br3DEP0W.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/runtime.CPjQUAmY.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index.DaPUmdRM.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.B0hM5pXQ.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/render.BbwaS4nf.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/template.CFHl0Kkw.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/disclose-version.Bg9kRutz.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/props.DBBxljrA.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/proxy.DLQEeM7u.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/this.BfOyDfXf.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/index-client.sY5WPPqS.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/0.w9mM2AB6.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/index.svelte.Pa8V3kP5.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/attributes.C_PYoMhF.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/lifecycle.B_GDcHyN.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/2.okJkWu-z.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/input.DCMW5mJo.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/store.8dw-2trk.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/stores.3xfXzElv.js">
-	</head>
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents"><!--[--><!--[--><!----><header><ul class="flex flex-row gap-2 p-2"><li><a class="px-2 rounded-md bg-orange-400 py-1 border-2 border-orange-500 text-white" href="./">Home</a></li> <li><a class="px-2 rounded-md bg-orange-400 py-1 border-2 border-orange-500 text-white" href="./graph">Graph</a></li> <li><a class="px-2 rounded-md bg-orange-400 py-1 border-2 border-orange-500 text-white" href="./settings">Settings</a></li> <li class="grow"></li> <li>Version: 9fb8ee8</li></ul></header> <!----><!----><main class="flex flex-col p-2 gap-4 items-center"><div class="flex flex-col-reverse gap-4 container-sm"><!--[--><!--]--></div> <form class="flex flex-row gap-4 justify-stretch align-stretch"><label><textarea class="outline outline-2 rounded-sm outline-blue-100 h-full" placeholder="New note"></textarea></label> <button type="submit" class="bg-blue-100 rounded-sm px-4 py-1">Send</button></form></main><!----><!----><!----><!--]--> <!--[!--><!--]--><!--]-->
-			
+		<link rel="modulepreload" href="./_app/immutable/chunks/props.m8jSf0UH.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/proxy.tfkVzh6H.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/this.B0rOk43R.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index-client.DRnN0yv5.js">
+</head>
+
+<body data-sveltekit-preload-data="hover">
+	<div style="display: contents">
 			<script>
 				{
 					__sveltekit_1o7swe0 = {
@@ -40,21 +39,15 @@
 
 					const element = document.currentScript.parentElement;
 
-					const data = [null,null];
-
 					Promise.all([
-						import("./_app/immutable/entry/start.AD8QA6-O.js"),
-						import("./_app/immutable/entry/app.DZxtT6Nr.js")
+						import("./_app/immutable/entry/start.BZl4OMJy.js"),
+						import("./_app/immutable/entry/app.B0hM5pXQ.js")
 					]).then(([kit, app]) => {
-						kit.start(app, element, {
-							node_ids: [0, 2],
-							data,
-							form: null,
-							error: null
-						});
+						kit.start(app, element);
 					});
 				}
 			</script>
 		</div>
-	</body>
+</body>
+
 </html>
