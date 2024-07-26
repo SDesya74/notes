@@ -63,8 +63,8 @@
 <div class="flex flex-col px-1 py-0.5 flex-grow">
     <div
         class="border border-black flex flex-grow cursor-default"
-        on:mousemove={onMouseMove}
-        on:mouseup={onMouseUp}
+        onmousemove={onMouseMove}
+        onmouseup={onMouseUp}
         style="position: relative;"
         role="button"
         tabindex="0"

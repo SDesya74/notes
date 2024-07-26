@@ -19,49 +19,42 @@
     }
 </script>
 
-<main class="flex h-screen overflow-hidden bg-slate-100 dark:bg-slate-800">
-    <div class="flex-1">
-        <header
-            class="bg-white dark:bg-slate-700 p-4 text-gray-700 dark:text-gray-100"
-        >
-            <ul
-                class="flex flex-row gap-4 p-2 font-semibold text-lg xl:text-xl"
-            >
-                <li>
-                    <a href="{base}/" aria-current={current(`${base}/`)}>
-                        Notes
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="{base}/graph"
-                        aria-current={current(`${base}/graph`)}
-                    >
-                        Graph
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="{base}/settings"
-                        aria-current={current(`${base}/settings`)}
-                    >
-                        Settings
-                    </a>
-                </li>
-                <li class="grow"></li>
-
-                <ThemeToggle />
-
-                <li
-                    class="flex-row justify-center items-center text-base hidden lg:visible"
+<main
+    class="flex flex-col h-screen overflow-hidden bg-slate-100 dark:bg-slate-800"
+>
+    <header
+        class="bg-white dark:bg-slate-700 p-4 text-gray-700 dark:text-gray-100"
+    >
+        <ul class="flex flex-row gap-4 p-2 font-semibold text-lg xl:text-xl">
+            <li>
+                <a href="{base}/" aria-current={current(`${base}/`)}> Notes </a>
+            </li>
+            <li>
+                <a href="{base}/graph" aria-current={current(`${base}/graph`)}>
+                    Graph
+                </a>
+            </li>
+            <li>
+                <a
+                    href="{base}/settings"
+                    aria-current={current(`${base}/settings`)}
                 >
-                    Version: {version}
-                </li>
-            </ul>
-        </header>
+                    Settings
+                </a>
+            </li>
+            <li class="grow"></li>
 
-        <slot />
-    </div>
+            <ThemeToggle />
+
+            <li
+                class="flex-row justify-center items-center text-base hidden lg:visible"
+            >
+                Version: {version}
+            </li>
+        </ul>
+    </header>
+
+    <slot />
 </main>
 
 <style lang="postcss">
