@@ -21,7 +21,7 @@
     </div>
 
     <a
-        class="lg:opacity-0 group-hover/note:opacity-100 transition duration-200 cursor-pointer"
+        class="lg:opacity-0 group-hover/note:opacity-100 transition duration-200 cursor-pointer text-black dark:text-white"
         href="{base}/#{value.id}">+</a
     >
 </div>
