@@ -1,1 +1,0 @@
-import{R as r,f as e,d as c,T as f,u as i,U as u,H as l,V as _}from"./runtime.DJFpnPC0.js";function m(){const s=c,n=s.l.u;n&&(n.b.length&&r(()=>{a(s),f(n.b)}),e(()=>{const o=i(()=>n.m.map(u));return()=>{for(const t of o)typeof t=="function"&&t()}}),n.a.length&&e(()=>{a(s),f(n.a)}))}function a(s){if(s.l.s)for(const n of s.l.s)l(n);_(s.s)}export{m as i};
