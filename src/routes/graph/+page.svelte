@@ -49,46 +49,64 @@
     let dragging = null as any;
     let offset = { x: 0, y: 0 };
     
-    let isDraggingCanvas = false; 
-    let canvasOffset = { x: 0, y: 0 }; 
+    let isDraggingCanvas = false;
+    let scale = 1;
+    const scaleFactor = 0.1;
+    let canvasOffset = { x: 0, y: 0 };
 
     function onMouseDown(event: any, index: number) {
         dragging = index;
-        offset.x = event.clientX - positions[index].x;
-        offset.y = event.clientY - positions[index].y;
+        offset.x = (event.clientX - (positions[index].x + canvasOffset.x) * scale) / scale;
+        offset.y = (event.clientY - (positions[index].y + canvasOffset.y) * scale) / scale;
     }
 
     function onMouseMove(event: any) {
-        if (isDraggingCanvas) { 
-            const dx = event.movementX; 
-            const dy = event.movementY; 
-            Object.keys(positions).forEach((key) => { 
-                positions[key].x += dx; 
-                positions[key].y += dy; 
-            });
+        if (isDraggingCanvas) {
+            const dx = event.movementX;
+            const dy = event.movementY;
+            canvasOffset.x += dx;
+            canvasOffset.y += dy;
         } else if (dragging !== null) {
             positions[dragging] = {
-                x: event.clientX - offset.x,
-                y: event.clientY - offset.y,
+                x: (event.clientX - offset.x * scale) / scale - canvasOffset.x,
+                y: (event.clientY - offset.y * scale) / scale - canvasOffset.y,
             };
         }
     }
 
     function onMouseUp() {
         dragging = null;
-        isDraggingCanvas = false; 
+        isDraggingCanvas = false;
     }
 
-    function onCanvasMouseDown(event: any) { 
-        if (event.target === event.currentTarget) { 
-            isDraggingCanvas = true; 
-        } 
-    } 
+    function onCanvasMouseDown(event: any) {
+        if (event.target === event.currentTarget) {
+            isDraggingCanvas = true;
+        }
+    }
+
+    function onWheel(event: WheelEvent) {
+        const { deltaY, clientX, clientY } = event;
+        const canvasRect = event.currentTarget.getBoundingClientRect();
+        const mouseX = clientX - canvasRect.left;
+        const mouseY = clientY - canvasRect.top;
+
+        const scaleChange = deltaY < 0 ? scaleFactor : -scaleFactor;
+        const newScale = Math.min(Math.max(0.5, scale + scaleChange), 3);
+
+        const scaleRatio = newScale / scale;
+        canvasOffset.x = mouseX - scaleRatio * (mouseX - canvasOffset.x);
+        canvasOffset.y = mouseY - scaleRatio * (mouseY - canvasOffset.y);
+
+        scale = newScale;
+    }
 </script>
 
 <style>
     .canvas {
         position: relative;
+        width: 100%;
+        height: 100%;
         overflow: hidden;
     }
 </style>
@@ -99,27 +117,31 @@
         on:mousemove={onMouseMove}
         on:mouseup={onMouseUp}
         on:mousedown={onCanvasMouseDown}
+        on:wheel={onWheel}
         style="position: relative;"
         role="button"
         tabindex="0"
     >
-        {#each Object.keys(links) as index}
-            <Line
-                messageId={index}
-                posIndexX={positions[index].x}
-                posIndexY={positions[index].y}
-                posLinksX={positions[links[index]].x}
-                posLinksY={positions[links[index]].y}
-            />
-        {/each}
-        {#each Object.keys(messages) as index}
-            <Note
-                messageId={index}
-                posX={positions[index].x}
-                posY={positions[index].y}
-                messageContent={messages[index].content}
-                onMouseDown={(event) => onMouseDown(event, index)}
-            />
-        {/each}
+        <div class="flex flex-grow" style="transform: translate({canvasOffset.x}px, {canvasOffset.y}px) scale({scale}); transform-origin: 0 0; visibility: hidden;">
+            {#each Object.keys(links) as index}
+                <Line
+
+                    messageId={index}
+                    posIndexX={positions[index].x}
+                    posIndexY={positions[index].y}
+                    posLinksX={positions[links[index]].x}
+                    posLinksY={positions[links[index]].y}
+                />
+            {/each}
+            {#each Object.keys(messages) as index}
+                <Note
+                    messageId={index}
+                    posX={positions[index].x}
+                    posY={positions[index].y}
+                    messageContent={messages[index].content}
+                    onMouseDown={(event) => onMouseDown(event, index)}
+                />
+            {/each}
+        </div>
     </div>
 </div>

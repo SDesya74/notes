@@ -15,7 +15,7 @@
 </script>
 
 <div
-    class="line absolute h-0.5 bg-black dark:bg-white"
+    class="line absolute h-0.5 bg-black dark:bg-white visible"
     style="
     left: {posLinksX + (noteWidth/2)}px;
     top: {posLinksY + (noteHeight/2)}px;

@@ -23,7 +23,7 @@
 <div
     bind:offsetHeight={noteHeight}
     bind:offsetWidth={noteWidth}
-    class="note min-w-24 max-w-96 min-h-12 relative pt-3"
+    class="note min-w-24 max-w-96 min-h-12 relative pt-3 visible"
     style="
             position: absolute;
             left: {posX}px;
