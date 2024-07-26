@@ -1,19 +1,25 @@
 <script>
-    export let posLinksX = 0;
-    export let posLinksY = 0;
-    export let posIndexX = 0;
-    export let posIndexY = 0;
+    import { messages } from "$lib/index.svelte";
+
+    let {posLinksX, posLinksY, posIndexX, posIndexY, messageId} = $props();
+
+     let noteWidth = 96;
+     let noteHeight = 68;
+
+    $effect(() => {
+        let transform = messages.get(messageId).data.transform;
+        
+        console.log(transform)
+    });
+    // $: console.log(noteHeight, noteWidth);
 </script>
 
 <div
-    class="line"
+    class="line absolute h-0.5 bg-black dark:bg-white"
     style="
-    position: absolute;
-    left: {posLinksX + 50}px;
-    top: {posLinksY + 50}px;
+    left: {posLinksX + (noteWidth/2)}px;
+    top: {posLinksY + (noteHeight/2)}px;
     width: {Math.sqrt(Math.pow(posIndexX - posLinksX, 2) + Math.pow(posIndexY - posLinksY, 2))}px;
-    height: 2px;
-    background: black;
     transform: rotate({Math.atan2(posIndexY - posLinksY, posIndexX - posLinksX) * 180 / Math.PI}deg);
     "
 ></div>
@@ -21,6 +27,6 @@
 <style>
     .line {
         transform-origin: 0 0;
-        z-index: -1;
+        z-index: 0;
     }
 </style>
