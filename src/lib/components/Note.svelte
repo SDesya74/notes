@@ -42,7 +42,7 @@
             top: {posY}px;
           "
 >
-    <button class="w-4 h-4 absolute right-2 top-2" on:mousedown={onMouseDown}>
+    <button class="w-4 h-4 absolute right-2 top-2" onmousedown={onMouseDown}>
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
