@@ -20,7 +20,7 @@
 </script>
 
 <main class="flex h-screen overflow-hidden bg-slate-100 dark:bg-slate-800">
-    <div class="flex-1">
+    <div class="flex-grow flex flex-col">
         <header
             class="bg-white dark:bg-slate-700 p-4 text-gray-700 dark:text-gray-100"
         >

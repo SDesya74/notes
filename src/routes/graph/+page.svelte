@@ -1,20 +1,11 @@
 <script lang="ts">
-    import { onMount } from 'svelte'
-    import Note from '../../lib/components/Note.svelte'
-    import Line from '../../lib/components/Line.svelte'
-    // import {messages} from "../../lib/index.svelte";
+    import { onMount } from 'svelte';
+    import Note from '../../lib/components/Note.svelte';
+    import Line from '../../lib/components/Line.svelte';
 
-    let links = {
-        
-    }
-
-    let messages = {
-        
-    }
-
-    let positions = {
-        
-    }
+    let links = {};
+    let messages = {};
+    let positions = {};
 
     let noteSizes = {
         'da-d23-asd0': { width: 100, height: 50 },
@@ -22,30 +13,27 @@
         'da-d23-asd2': { width: 130, height: 70 },
         'da-d23-asd3': { width: 110, height: 55 },
         'da-d23-asd4': { width: 140, height: 75 },
-    }
+    };
 
     onMount(() => {
-        let data = localStorage.getItem('notes')
-        let parseData = JSON.parse(data)
-        links = parseData.links
-        messages = parseData.messages
+        let data = localStorage.getItem('notes');
+        let parseData = JSON.parse(data);
+        links = parseData.links;
+        messages = parseData.messages;
 
-        let messageYPos = 0
-        let messageXPos = 200
+        let messageYPos = 0;
+        let messageXPos = 200;
 
-        // let linksArray = Object.values(links);
-        // let linksKeys = Object.keys(links);
-
-        let parents = new Set()
-        let childrenPos = {}
+        let parents = new Set();
+        let childrenPos = {};
 
         Object.keys(messages).map((index) => {
             if (parents.has(links[index])) {
                 positions[index] = {
                     x: childrenPos[links[index]].x + 150,
                     y: childrenPos[links[index]].y,
-                }
-                childrenPos[links[index]].x = childrenPos[links[index]].x + 150
+                };
+                childrenPos[links[index]].x = childrenPos[links[index]].x + 150;
             } else {
                 let newYPos = messageYPos * 100 + 20;
                 let newXPos = messageXPos + 100;
@@ -54,38 +42,63 @@
                 positions[index] = { x: newXPos, y: newYPos };
                 messageYPos++;
             }
-            // console.log(`${messages[index].content}`, positions[index])
-        })
-    })
+        });
+        console.log(childrenPos);
+    });
 
-    let dragging = null as any
-    let offset = { x: 0, y: 0 }
+    let dragging = null as any;
+    let offset = { x: 0, y: 0 };
+    
+    let isDraggingCanvas = false; 
+    let canvasOffset = { x: 0, y: 0 }; 
 
     function onMouseDown(event: any, index: number) {
-        dragging = index
-        offset.x = event.clientX - positions[index].x
-        offset.y = event.clientY - positions[index].y
+        dragging = index;
+        offset.x = event.clientX - positions[index].x;
+        offset.y = event.clientY - positions[index].y;
     }
 
     function onMouseMove(event: any) {
-        if (dragging !== null) {
+        if (isDraggingCanvas) { 
+            const dx = event.movementX; 
+            const dy = event.movementY; 
+            Object.keys(positions).forEach((key) => { 
+                positions[key].x += dx; 
+                positions[key].y += dy; 
+            });
+        } else if (dragging !== null) {
             positions[dragging] = {
                 x: event.clientX - offset.x,
                 y: event.clientY - offset.y,
-            }
+            };
         }
     }
 
     function onMouseUp() {
-        dragging = null
+        dragging = null;
+        isDraggingCanvas = false; 
     }
+
+    function onCanvasMouseDown(event: any) { 
+        if (event.target === event.currentTarget) { 
+            isDraggingCanvas = true; 
+        } 
+    } 
 </script>
+
+<style>
+    .canvas {
+        position: relative;
+        overflow: hidden;
+    }
+</style>
 
 <div class="flex flex-col px-1 py-0.5 flex-grow">
     <div
-        class="border border-black flex flex-grow cursor-default"
+        class="border border-black flex flex-grow cursor-default canvas"
         on:mousemove={onMouseMove}
         on:mouseup={onMouseUp}
+        on:mousedown={onCanvasMouseDown}
         style="position: relative;"
         role="button"
         tabindex="0"
@@ -110,9 +123,3 @@
         {/each}
     </div>
 </div>
-
-<!-- noteWidth={noteSizes[index].width}
-  noteHeight={noteSizes[index].height} -->
-
-<!-- bind:noteWidth={noteSizes[index].width}
-  bind:noteHeight={noteSizes[index].height} -->

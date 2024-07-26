@@ -1,6 +1,8 @@
 <script>
     import {messages} from '../index.svelte'
-    let { posX, posY, messageContent, onMouseDown, messageId, noteWidth, noteHeight } = $props();
+    let { posX, posY, messageContent, onMouseDown, messageId } = $props();
+    let noteWidth = 96;
+    let noteHeight = 68;
 
     $effect(() => {
         messages.updateTransform(messageId, { x: posX, y: posY }, noteWidth, noteHeight);
