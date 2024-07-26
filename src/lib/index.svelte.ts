@@ -22,6 +22,14 @@ const INCREMENT_PROVIDER: IdProvider = new IncrementProvider()
 export type MessageData = {
     content: string
     createdAt: number
+    transform:{
+        position: {
+            x: number
+            y: number
+        }
+        width: number
+        height: number
+    }
 }
 
 export type Message = {
@@ -43,6 +51,10 @@ class Messages {
     messages: { [id: Id]: Message } = {}
 
     constructor(private id_provider: IdProvider = NANOID_PROVIDER) {}
+
+    get(id: Id): Message | null {
+        return this.messages[id] ?? null
+    }
 
     insert(id: Id, message: MessageData) {
         const inner = {
@@ -123,12 +135,21 @@ class Messages {
         }
     }
 
+    updateTransform(id: Id, position: { x: number, y: number }, width: number, height: number) {
+        const message = this.messages[id];
+        if (message) {
+            message.data.transform = { position, width, height };
+        } else {
+            console.error(`Message with id ${id} does not exist.`);
+        }
+    }
+
     clear() {
         this.messages = {}
     }
 }
 
-export const messages = $state(new Messages())
+export const messages = $state(new Messages(NANOID_PROVIDER))
 
 type ExportedMessages = {
     // child to parent map
