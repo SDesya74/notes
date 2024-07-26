@@ -4,9 +4,10 @@
     import { messages } from '$lib/index.svelte'
     import { version } from '$app/environment'
     import { page } from '$app/stores'
+    import ThemeToggle from '$lib/components/ThemeToggle.svelte'
+    import favicon from '$lib/assets/favicon.svg?raw'
     import '../app.css'
     import '../theme.css'
-    import ThemeToggle from '$lib/components/ThemeToggle.svelte'
 
     if (browser) {
         const raw = localStorage.getItem('notes')
@@ -22,12 +23,14 @@
 <main
     class="flex flex-col h-screen overflow-hidden bg-slate-100 dark:bg-slate-800"
 >
-    <header
-        class="bg-white dark:bg-slate-700 p-4 text-gray-700 dark:text-gray-100"
-    >
-        <ul class="flex flex-row gap-4 p-2 font-semibold text-lg xl:text-xl">
-            <li>
-                <a href="{base}/" aria-current={current(`${base}/`)}> Notes </a>
+    <header class="bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-100">
+        <ul
+            class="flex flex-row items-center gap-4 px-1 sm:px-4 font-semibold text-lg"
+        >
+            <li class="w-14 h-14 p-2">
+                <a href="{base}/" aria-current={current(`${base}/`)}>
+                    {@html favicon}
+                </a>
             </li>
             <li>
                 <a href="{base}/graph" aria-current={current(`${base}/graph`)}>
@@ -47,7 +50,7 @@
             <ThemeToggle />
 
             <li
-                class="flex-row justify-center items-center text-base hidden lg:visible"
+                class="flex-row justify-center items-center text-base collapse sm:visible"
             >
                 Version: {version}
             </li>
