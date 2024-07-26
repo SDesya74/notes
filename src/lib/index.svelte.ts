@@ -128,7 +128,7 @@ class Messages {
     }
 }
 
-export const messages = $state(new Messages(INCREMENT_PROVIDER))
+export const messages = $state(new Messages())
 
 type ExportedMessages = {
     // child to parent map

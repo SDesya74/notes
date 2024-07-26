@@ -1,0 +1,8 @@
+:root {
+    /* TODO: Apply opacity https://play.tailwindcss.com/YelhilBeHb */
+    --accent: #fb923c;
+}
+
+[data-theme='dark'] {
+    --accent: var(--accent);
+}

@@ -35,7 +35,7 @@
 
 <div class="flex flex-row">
     <pre>
-  <textarea bind:value={raw} style="width: 65ch;"></textarea>
-</pre>
+        <textarea bind:value={raw} style="width: 65ch;"></textarea>
+    </pre>
     <Tree value={JSON.parse(raw)} defaultExpandedLevel={5} />
 </div>
