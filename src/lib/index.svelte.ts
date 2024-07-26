@@ -22,7 +22,7 @@ const INCREMENT_PROVIDER: IdProvider = new IncrementProvider()
 export type MessageData = {
     content: string
     createdAt: number
-    transform:{
+    transform: {
         position: {
             x: number
             y: number
@@ -135,12 +135,17 @@ class Messages {
         }
     }
 
-    updateTransform(id: Id, position: { x: number, y: number }, width: number, height: number) {
-        const message = this.messages[id];
+    updateTransform(
+        id: Id,
+        position: { x: number; y: number },
+        width: number,
+        height: number
+    ) {
+        const message = this.messages[id]
         if (message) {
-            message.data.transform = { position, width, height };
+            message.data.transform = { position, width, height }
         } else {
-            console.error(`Message with id ${id} does not exist.`);
+            console.error(`Message with id ${id} does not exist.`)
         }
     }
 

@@ -48,7 +48,7 @@
 </script>
 
 <!-- TODO: Fullsize note editor on a separate page or in a bottom sheet -->
-<div class="flex-1 container mx-auto">
+<div class="container mx-auto">
     <div class="h-screen overflow-y-auto p-4 pb-32">
         {#if currentChat}
             {#each currentChat as message}
@@ -58,9 +58,9 @@
     </div>
 
     <footer
-        class="dark:text-white bg-slate-100 dark:bg-slate-700 border-t border-gray-300 dark:border-slate-600 p-4 absolute bottom-0 container mx-auto"
+        class="dark:text-white bg-slate-100 dark:bg-slate-700 border-t border-gray-300 dark:border-slate-600 p-4 absolute left-0 bottom-0 w-full"
     >
-        <form class="flex items-center" onsubmit={newMessage}>
+        <form class="flex items-center container mx-auto" onsubmit={newMessage}>
             <input
                 type="text"
                 bind:this={textInputElement}

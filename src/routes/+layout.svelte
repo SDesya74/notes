@@ -4,9 +4,10 @@
     import { messages } from '$lib/index.svelte'
     import { version } from '$app/environment'
     import { page } from '$app/stores'
+    import ThemeToggle from '$lib/components/ThemeToggle.svelte'
+    import favicon from '$lib/assets/favicon.svg?raw'
     import '../app.css'
     import '../theme.css'
-    import ThemeToggle from '$lib/components/ThemeToggle.svelte'
 
     if (browser) {
         const raw = localStorage.getItem('notes')
@@ -24,44 +25,40 @@
         <header
             class="bg-white dark:bg-slate-700 p-4 text-gray-700 dark:text-gray-100"
         >
-            <ul
-                class="flex flex-row gap-4 p-2 font-semibold text-lg xl:text-xl"
+        <ul
+        class="flex flex-row items-center gap-4 px-1 sm:px-4 font-semibold text-lg"
+    >
+        <li class="w-14 h-14 p-2">
+            <a href="{base}/" aria-current={current(`${base}/`)}>
+                {@html favicon}
+            </a>
+        </li>
+        <li>
+            <a href="{base}/graph" aria-current={current(`${base}/graph`)}>
+                Graph
+            </a>
+        </li>
+        <li>
+            <a
+                href="{base}/settings"
+                aria-current={current(`${base}/settings`)}
             >
-                <li>
-                    <a href="{base}/" aria-current={current(`${base}/`)}>
-                        Notes
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="{base}/graph"
-                        aria-current={current(`${base}/graph`)}
-                    >
-                        Graph
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="{base}/settings"
-                        aria-current={current(`${base}/settings`)}
-                    >
-                        Settings
-                    </a>
-                </li>
-                <li class="grow"></li>
+                Settings
+            </a>
+        </li>
+        <li class="grow"></li>
 
-                <ThemeToggle />
+            <ThemeToggle />
 
-                <li
-                    class="flex-row justify-center items-center text-base hidden lg:visible"
-                >
-                    Version: {version}
-                </li>
-            </ul>
-        </header>
+            <li
+                class="flex-row justify-center items-center text-base collapse sm:visible"
+            >
+                Version: {version}
+            </li>
+        </ul>
+    </header>
 
-        <slot />
-    </div>
+    <slot />
 </main>
 
 <style lang="postcss">
