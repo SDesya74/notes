@@ -2,27 +2,10 @@
     import { onMount } from 'svelte'
     import Note from '../../lib/components/Note.svelte'
     import Line from '../../lib/components/Line.svelte'
-    // import {messages} from "../../lib/index.svelte";
 
-    let links = {
-        
-    }
-
-    let messages = {
-        
-    }
-
-    let positions = {
-        
-    }
-
-    let noteSizes = {
-        'da-d23-asd0': { width: 100, height: 50 },
-        'da-d23-asd1': { width: 120, height: 60 },
-        'da-d23-asd2': { width: 130, height: 70 },
-        'da-d23-asd3': { width: 110, height: 55 },
-        'da-d23-asd4': { width: 140, height: 75 },
-    }
+    let links = {}
+    let messages = {}
+    let positions = {}
 
     onMount(() => {
         let data = localStorage.getItem('notes')
@@ -32,9 +15,6 @@
 
         let messageYPos = 0
         let messageXPos = 200
-
-        // let linksArray = Object.values(links);
-        // let linksKeys = Object.keys(links);
 
         let parents = new Set()
         let childrenPos = {}
@@ -47,14 +27,13 @@
                 }
                 childrenPos[links[index]].x = childrenPos[links[index]].x + 150
             } else {
-                let newYPos = messageYPos * 100 + 20;
-                let newXPos = messageXPos + 100;
-                parents.add(links[index]);
-                childrenPos[links[index]] = { x: newXPos, y: newYPos };
-                positions[index] = { x: newXPos, y: newYPos };
-                messageYPos++;
+                let newYPos = messageYPos * 100 + 20
+                let newXPos = messageXPos + 100
+                parents.add(links[index])
+                childrenPos[links[index]] = { x: newXPos, y: newYPos }
+                positions[index] = { x: newXPos, y: newYPos }
+                messageYPos++
             }
-            // console.log(`${messages[index].content}`, positions[index])
         })
     })
 
@@ -110,9 +89,3 @@
         {/each}
     </div>
 </div>
-
-<!-- noteWidth={noteSizes[index].width}
-  noteHeight={noteSizes[index].height} -->
-
-<!-- bind:noteWidth={noteSizes[index].width}
-  bind:noteHeight={noteSizes[index].height} -->
