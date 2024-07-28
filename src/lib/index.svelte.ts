@@ -41,6 +41,7 @@ export type Message = {
 }
 
 export function createMessage(text: string): MessageData {
+    // TODO: Choose transform for a new message
     return {
         content: text,
         createdAt: Date.now(),
@@ -48,12 +49,12 @@ export function createMessage(text: string): MessageData {
 }
 
 class Messages {
-    messages: { [id: Id]: Message } = {}
+    inner: { [id: Id]: Message } = $state({})
 
     constructor(private id_provider: IdProvider = NANOID_PROVIDER) {}
 
     get(id: Id): Message | null {
-        return this.messages[id] ?? null
+        return this.inner[id] ?? null
     }
 
     insert(id: Id, message: MessageData) {
@@ -64,7 +65,7 @@ class Messages {
             parent: null,
         }
 
-        this.messages[id] = inner
+        this.inner[id] = inner
     }
 
     add(parent: Id | null, message: MessageData): Id {
@@ -77,20 +78,41 @@ class Messages {
         return id
     }
 
+    delete(id: Id) {
+        const message = this.inner[id]
+        if (!message) return
+        if (message.children.size > 0 && message.parent) {
+            message.children.forEach((child) => {
+                this.link(message.parent!, child)
+            })
+        }
+        if (message.parent) this.unlink(message.parent, id)
+        delete this.inner[id]
+    }
+
     get length(): number {
-        return Object.keys(this.messages).length
+        return Object.keys(this.inner).length
     }
 
     link(parent: Id, child: Id) {
-        this.messages[parent].children.add(child)
-        this.messages[child].parent = parent
+        this.inner[parent].children.add(child)
+        this.inner[child].parent = parent
+    }
+
+    unlink(parent: Id, child: Id) {
+        this.inner[parent].children.delete(child)
+        this.inner[child].parent = null
+    }
+
+    isLeaf(id: Id): boolean {
+        return this.inner[id].children.size === 0
     }
 
     chatFrom(id: Id, count: number = 20): Message[] {
         const out = []
         let iter_id: Id | null = id
         while (count-- > 0) {
-            const message: Message = this.messages[iter_id!]
+            const message: Message = this.inner[iter_id!]
             if (!message) break
             iter_id = message.parent
             out.push(message)
@@ -99,8 +121,22 @@ class Messages {
         return out
     }
 
+    untilBranchOrLeaf(id: Id): Id {
+        let iter_id: Id | null = id
+
+        while (iter_id) {
+            const message: Message = this.inner[iter_id!]
+            if (!message) break
+            if (message.children.size !== 1) break
+            const firstChild = message.children.values().next().value
+            iter_id = firstChild
+        }
+
+        return iter_id!
+    }
+
     lastCreatedAt(): Message | null {
-        const msgs = Object.values(this.messages)
+        const msgs = Object.values(this.inner)
 
         if (msgs.length < 1) {
             return null
@@ -115,7 +151,7 @@ class Messages {
         const links: ExportedMessages['links'] = {}
         const messages: ExportedMessages['messages'] = {}
 
-        for (const message of Object.values(this.messages)) {
+        for (const message of Object.values(this.inner)) {
             messages[message.id] = message.data
 
             if (!message.parent) continue
@@ -141,7 +177,7 @@ class Messages {
         width: number,
         height: number
     ) {
-        const message = this.messages[id]
+        const message = this.inner[id]
         if (message) {
             message.data.transform = { position, width, height }
         } else {
@@ -150,11 +186,11 @@ class Messages {
     }
 
     clear() {
-        this.messages = {}
+        this.inner = {}
     }
 }
 
-export const messages = $state(new Messages(NANOID_PROVIDER))
+export const messages = new Messages(NANOID_PROVIDER)
 
 type ExportedMessages = {
     // child to parent map
