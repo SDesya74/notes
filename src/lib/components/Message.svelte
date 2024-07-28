@@ -3,6 +3,7 @@
     import { type Message } from '$lib/index.svelte'
     import Markdown from 'svelte-exmarkdown'
     import { gfmPlugin } from 'svelte-exmarkdown/gfm'
+    import deleteIcon from '$lib/assets/delete.svg?raw'
 
     let {
         value,
@@ -49,17 +50,7 @@
             onclick={() => ondelete(value)}
             title="Delete a note"
         >
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                ><g
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    ><path
-                        d="M3 6h18M5 6v14c0 1.1.9 2 2 2h10a2 2 0 0 0 2-2V6M8 6V4c0-1.1.9-2 2-2h4a2 2 0 0 1 2 2v2M14 11v6M10 11v6"
-                    /></g
-                ></svg
-            >
+            {@html deleteIcon}
         </button>
     </div>
 </div>

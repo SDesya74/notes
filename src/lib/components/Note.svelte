@@ -1,16 +1,14 @@
 <script>
     import { base } from '$app/paths'
+    import { gfmPlugin } from 'svelte-exmarkdown/gfm'
     import { messages } from '../index.svelte'
-    let {
-        posX,
-        posY,
-        messageContent,
-        onMouseDown,
-        messageId,
-    } = $props()
+    import Markdown from 'svelte-exmarkdown'
+    import deleteIcon from '$lib/assets/delete.svg?raw'
 
-    let noteWidth = 96;
-    let noteHeight = 68;
+    let { posX, posY, messageContent, onMouseDown, messageId } = $props()
+
+    let noteWidth = 96
+    let noteHeight = 68
 
     $effect(() => {
         messages.updateTransform(
@@ -59,22 +57,10 @@
         </svg>
     </button>
     <button
-        class="w-4 h-4 absolute left-2 top-2"
+        class="w-4 h-4 absolute left-2 top-2 stroke-black"
         onclick={() => copyToClipboard(messageContent)}
     >
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-copy"
-            viewBox="0 0 16 16"
-        >
-            <path
-                fill-rule="evenodd"
-                d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"
-            />
-        </svg>
+        {@html deleteIcon}
     </button>
     <a class="w-4 h-4 absolute left-8 top-2" href="{base}/#{messageId}">
         <svg
@@ -94,7 +80,11 @@
         </svg>
     </a>
     <div class="flex w-full h-full justify-center">
-        <div class="p-4 w-full break-all">{messageContent}</div>
+        <div class="p-4 w-full break-all">
+            <article class="grow prose prose-zinc">
+                <Markdown md={messageContent} plugins={[gfmPlugin()]} />
+            </article>
+        </div>
     </div>
 </div>
 

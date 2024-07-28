@@ -61,7 +61,7 @@
 
 <!-- TODO: Fullsize note editor on a separate page or in a bottom sheet -->
 <div class="container mx-auto">
-    <div class="h-screen flex flex-col justify-end overflow-y-auto p-4 pb-36">
+    <div class="h-screen flex flex-col justify-end overflow-y-auto p-4 pb-32">
         {#if currentChat}
             {#each currentChat as message}
                 <Message

@@ -23,42 +23,46 @@
 <main class="flex h-screen overflow-hidden bg-slate-100 dark:bg-slate-800">
     <div class="flex-grow flex flex-col">
         <header
-            class="bg-white dark:bg-slate-700 p-4 text-gray-700 dark:text-gray-100"
+            class="bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-100"
         >
-        <ul
-        class="flex flex-row items-center gap-4 px-1 sm:px-4 font-semibold text-lg"
-    >
-        <li class="w-14 h-14 p-2">
-            <a href="{base}/" aria-current={current(`${base}/`)}>
-                {@html favicon}
-            </a>
-        </li>
-        <li>
-            <a href="{base}/graph" aria-current={current(`${base}/graph`)}>
-                Graph
-            </a>
-        </li>
-        <li>
-            <a
-                href="{base}/settings"
-                aria-current={current(`${base}/settings`)}
+            <ul
+                class="flex flex-row items-center gap-4 px-1 sm:px-4 font-semibold text-lg"
             >
-                Settings
-            </a>
-        </li>
-        <li class="grow"></li>
+                <li class="w-14 h-14 p-2">
+                    <a href="{base}/" aria-current={current(`${base}/`)}>
+                        {@html favicon}
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="{base}/graph"
+                        aria-current={current(`${base}/graph`)}
+                    >
+                        Graph
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="{base}/settings"
+                        aria-current={current(`${base}/settings`)}
+                    >
+                        Settings
+                    </a>
+                </li>
+                <li class="grow"></li>
 
-            <ThemeToggle />
+                <ThemeToggle />
 
-            <li
-                class="flex-row justify-center items-center text-base collapse sm:visible"
-            >
-                Version: {version}
-            </li>
-        </ul>
-    </header>
+                <li
+                    class="flex-row justify-center items-center text-base collapse sm:visible"
+                >
+                    Version: {version}
+                </li>
+            </ul>
+        </header>
 
-    <slot />
+        <slot />
+    </div>
 </main>
 
 <style lang="postcss">
