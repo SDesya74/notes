@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount } from 'svelte'
     import Note from '$lib/components/Note.svelte'
     import Line from '$lib/components/Line.svelte'
     import { messages as messagesStore, type Message } from '$lib/index.svelte'
@@ -38,6 +39,19 @@
             }
         })
     }
+
+    onMount(()=>{
+        const canvas = document.querySelector('.canvas');
+        if (canvas) {
+            canvas.addEventListener('wheel', onWheel, { passive: false });
+        }
+
+        return () => {
+            if (canvas) {
+                canvas.removeEventListener('wheel', onWheel);
+            }
+        };
+    })
 
     let dragging = null as any
     let offset = { x: 0, y: 0 }
@@ -88,39 +102,41 @@
     }
 
     function onWheel(event: WheelEvent) {
-        console.log({ event })
-        const { deltaY, clientX, clientY } = event
-        const canvasRect = event.currentTarget.getBoundingClientRect()
-        const mouseX = clientX - canvasRect.left
-        const mouseY = clientY - canvasRect.top
+        const { deltaX, deltaY, clientX, clientY, ctrlKey, altKey } = event;
+        if (ctrlKey) {
+            event.preventDefault();
+            const canvasRect = event.currentTarget.getBoundingClientRect();
+            const mouseX = clientX - canvasRect.left;
+            const mouseY = clientY - canvasRect.top;
 
-        const scaleChange = deltaY < 0 ? scaleFactor : -scaleFactor
-        const newScale = Math.min(Math.max(0.5, scale + scaleChange), 3)
+            const scaleChange = deltaY < 0 ? scaleFactor : -scaleFactor;
+            const newScale = Math.min(Math.max(0.5, scale + scaleChange), 3);
 
-        const scaleRatio = newScale / scale
-        canvasOffset.x = mouseX - scaleRatio * (mouseX - canvasOffset.x)
-        canvasOffset.y = mouseY - scaleRatio * (mouseY - canvasOffset.y)
+            const scaleRatio = newScale / scale;
+            canvasOffset.x = mouseX - scaleRatio * (mouseX - canvasOffset.x);
+            canvasOffset.y = mouseY - scaleRatio * (mouseY - canvasOffset.y);
 
-        scale = newScale
-    }
-
-    function handleScroll(wheel: WheelEvent) {
-        // TODO: Zoom
-        const { deltaX, deltaY, deltaMode, deltaZ } = wheel
-        scrollCanvas({
-            x: -deltaX,
-            y: -deltaY,
-        })
+            scale = newScale;
+        } else if (altKey) {
+            scrollCanvas({
+                x: -deltaY,
+                y: 0,
+            });
+        } else {
+            scrollCanvas({
+                x: -deltaX,
+                y: -deltaY,
+            });
+        }
     }
 </script>
 
 <div class="flex flex-col px-1 py-0.5 flex-grow">
     <div
-        class="flex flex-grow cursor-default w-full h-full overflow-hidden relative"
+        class="flex flex-grow cursor-default w-full h-full overflow-hidden relative canvas"
         onmousemove={onMouseMove}
         onmouseup={onMouseUp}
         onmousedown={onCanvasMouseDown}
-        onwheel={handleScroll}
         role="button"
         tabindex="0"
     >
