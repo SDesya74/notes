@@ -27,7 +27,7 @@
     })
 
     let leaf = $derived(messages.get(leafId!))
-    let currentChat = $derived(messages.chatFrom(leafId!, 15).toReversed())
+    let currentChat = $derived(messages.chatFrom(leafId!, 100).toReversed())
     let lastId = $derived(messages.untilBranchOrLeaf(leafId!))
 
     let textInput = $state('')
@@ -57,11 +57,14 @@
         messages.delete(value.id)
         localStorage.setItem('notes', JSON.stringify(messages.export()))
     }
+
+    let inputHeight = $state(0)
+    $inspect(inputHeight)
 </script>
 
 <!-- TODO: Fullsize note editor on a separate page or in a bottom sheet -->
-<div class="container mx-auto">
-    <div class="h-screen flex flex-col justify-end overflow-y-auto p-4 pb-32">
+<div class="flex-grow flex flex-col overflow-y-hidden">
+    <div class="flex flex-col container mx-auto overflow-y-scroll">
         {#if currentChat}
             {#each currentChat as message}
                 <Message
@@ -92,36 +95,36 @@
         {/if}
     </div>
 
-    <footer
-        class="dark:text-white bg-slate-100 dark:bg-slate-700 border-t border-gray-300 dark:border-slate-600 p-4 absolute left-0 bottom-0 w-full"
-    >
-        <form
-            class="flex items-center container mx-auto"
-            onsubmit={appendMessage}
-        >
-            <input
-                type="text"
-                bind:this={textInputElement}
-                bind:value={textInput}
-                placeholder="Type a message..."
-                class="w-full p-2 focus:outline-none focus:border-blue-500 bg-transparent"
-            />
-            <button class="px-4 py-2 rounded-md ml-2" type="submit">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="w-8 h-8 fill-current"
-                    viewBox="0 0 64 64"
-                    ><defs
-                        ><clipPath id="a"
-                            ><rect width="64" height="64"></rect></clipPath
-                        ></defs
-                    ><g clip-path="url(#a)"
-                        ><path
-                            d="M 8.216 36.338 L 26.885 32.604 C 28.552 32.271 28.552 31.729 26.885 31.396 L 8.216 27.662 C 7.104 27.44 6.021 26.356 5.799 25.245 L 2.065 6.576 C 1.731 4.908 2.714 4.133 4.259 4.846 L 61.228 31.139 C 62.257 31.614 62.257 32.386 61.228 32.861 L 4.259 59.154 C 2.714 59.867 1.731 59.092 2.065 57.424 L 5.799 38.755 C 6.021 37.644 7.104 36.56 8.216 36.338 Z "
-                        ></path></g
-                    ></svg
-                >
-            </button>
-        </form>
-    </footer>
+    <div class="block" style="height: {inputHeight + 16}px"></div>
 </div>
+
+<footer
+    bind:clientHeight={inputHeight}
+    class="dark:text-white bg-slate-100 dark:bg-slate-700 border-t border-gray-300 fixed bottom-0 left-0 dark:border-slate-600 px-4 py-2 md:py-4 w-full"
+>
+    <form class="flex items-center container mx-auto" onsubmit={appendMessage}>
+        <input
+            type="text"
+            bind:this={textInputElement}
+            bind:value={textInput}
+            placeholder="Type a message..."
+            class="w-full p-2 focus:outline-none focus:border-blue-500 bg-transparent"
+        />
+        <button class="py-2 rounded-md ml-2" type="submit">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-8 h-8 fill-current"
+                viewBox="0 0 64 64"
+                ><defs
+                    ><clipPath id="a"
+                        ><rect width="64" height="64"></rect></clipPath
+                    ></defs
+                ><g clip-path="url(#a)"
+                    ><path
+                        d="M 8.216 36.338 L 26.885 32.604 C 28.552 32.271 28.552 31.729 26.885 31.396 L 8.216 27.662 C 7.104 27.44 6.021 26.356 5.799 25.245 L 2.065 6.576 C 1.731 4.908 2.714 4.133 4.259 4.846 L 61.228 31.139 C 62.257 31.614 62.257 32.386 61.228 32.861 L 4.259 59.154 C 2.714 59.867 1.731 59.092 2.065 57.424 L 5.799 38.755 C 6.021 37.644 7.104 36.56 8.216 36.338 Z "
+                    ></path></g
+                ></svg
+            >
+        </button>
+    </form>
+</footer>

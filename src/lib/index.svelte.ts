@@ -19,17 +19,17 @@ class IncrementProvider implements IdProvider {
 }
 const INCREMENT_PROVIDER: IdProvider = new IncrementProvider()
 
+export type Transform = {
+    x: number
+    y: number
+    width: number
+    height: number
+}
+
 export type MessageData = {
     content: string
     createdAt: number
-    transform: {
-        position: {
-            x: number
-            y: number
-        }
-        width: number
-        height: number
-    }
+    transform: Transform
 }
 
 export type Message = {
@@ -45,6 +45,7 @@ export function createMessage(text: string): MessageData {
     return {
         content: text,
         createdAt: Date.now(),
+        transform: { x: 0, y: 0, width: 100, height: 40 },
     }
 }
 
@@ -168,20 +169,6 @@ class Messages {
 
         for (const [child, parent] of Object.entries(exported.links)) {
             this.link(parent, child)
-        }
-    }
-
-    updateTransform(
-        id: Id,
-        position: { x: number; y: number },
-        width: number,
-        height: number
-    ) {
-        const message = this.inner[id]
-        if (message) {
-            message.data.transform = { position, width, height }
-        } else {
-            console.error(`Message with id ${id} does not exist.`)
         }
     }
 

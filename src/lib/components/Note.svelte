@@ -1,74 +1,53 @@
-<script>
+<script lang="ts">
     import { base } from '$app/paths'
     import { gfmPlugin } from 'svelte-exmarkdown/gfm'
-    import { messages } from '../index.svelte'
     import Markdown from 'svelte-exmarkdown'
     import deleteIcon from '$lib/assets/delete.svg?raw'
+    import { type Message, messages } from '$lib/index.svelte'
+    import CanvasDragger from './CanvasDragger.svelte'
 
-    let { posX, posY, messageContent, onMouseDown, messageId } = $props()
+    let {
+        message = $bindable(),
+    }: {
+        message: Message
+    } = $props()
 
-    let noteWidth = 96
-    let noteHeight = 68
+    let transform = $derived(message.data.transform)
 
-    $effect(() => {
-        messages.updateTransform(
-            messageId,
-            { x: posX, y: posY },
-            noteWidth,
-            noteHeight
-        )
-    })
+    function dragNote(event: any) {
+        message.data.transform.x += event.movementX
+        message.data.transform.y += event.movementY
+    }
 
-    function copyToClipboard(text) {
-        navigator.clipboard
-            .writeText(text)
-            .then(() => {
-                console.log('Text copied to clipboard')
-            })
-            .catch((err) => {
-                console.error('Failed to copy text: ', err)
-            })
+    function deleteNote() {
+        messages.delete(message.id)
     }
 </script>
 
 <div
-    bind:offsetHeight={noteHeight}
-    bind:offsetWidth={noteWidth}
-    class="note min-w-24 max-w-96 min-h-12 relative pt-3 visible"
-    style="
-            position: absolute;
-            left: {posX}px;
-            top: {posY}px;
-          "
+    bind:offsetWidth={message.data.transform.width}
+    bind:offsetHeight={message.data.transform.height}
+    class="min-w-24 max-w-96 min-h-12 pt-3 visible absolute bg-gray-200 rounded-md flex items-end justify-center"
+    style="left: {transform.x}px; top: {transform.y}px;"
 >
-    <button class="w-4 h-4 absolute right-2 top-2" onmousedown={onMouseDown}>
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-arrows-move"
-            viewBox="0 0 16 16"
-        >
-            <path
-                fill-rule="evenodd"
-                d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10M.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8"
-            />
-        </svg>
-    </button>
+    <CanvasDragger
+        drag={dragNote}
+        end={() =>
+            localStorage.setItem('notes', JSON.stringify(messages.export()))}
+    />
+
     <button
         class="w-4 h-4 absolute left-2 top-2 stroke-black"
-        onclick={() => copyToClipboard(messageContent)}
+        onclick={deleteNote}
     >
         {@html deleteIcon}
     </button>
-    <a class="w-4 h-4 absolute left-8 top-2" href="{base}/#{messageId}">
+    <a class="w-4 h-4 absolute left-8 top-2" href="{base}/#{message.id}">
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
             height="16"
             fill="currentColor"
-            class="bi bi-link"
             viewBox="0 0 16 16"
         >
             <path
@@ -82,18 +61,11 @@
     <div class="flex w-full h-full justify-center">
         <div class="p-4 w-full break-all">
             <article class="grow prose prose-zinc">
-                <Markdown md={messageContent} plugins={[gfmPlugin()]} />
+                <Markdown md={message.data.content} plugins={[gfmPlugin()]} />
             </article>
         </div>
     </div>
 </div>
 
-<style>
-    .note {
-        background-color: lightgray;
-        border-radius: 10px;
-        display: flex;
-        align-items: end;
-        justify-content: center;
-    }
-</style>
+
+

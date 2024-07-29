@@ -20,49 +20,44 @@
     }
 </script>
 
-<main class="flex h-screen overflow-hidden bg-slate-100 dark:bg-slate-800">
-    <div class="flex-grow flex flex-col">
-        <header
-            class="bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-100"
+<main
+    class="flex flex-col h-screen bg-slate-100 dark:bg-slate-800 overflow-hidden"
+>
+    <header class="bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-100">
+        <ul
+            class="flex flex-row items-center gap-4 px-1 sm:px-4 font-semibold text-lg"
         >
-            <ul
-                class="flex flex-row items-center gap-4 px-1 sm:px-4 font-semibold text-lg"
-            >
-                <li class="w-14 h-14 p-2">
-                    <a href="{base}/" aria-current={current(`${base}/`)}>
-                        {@html favicon}
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="{base}/graph"
-                        aria-current={current(`${base}/graph`)}
-                    >
-                        Graph
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="{base}/settings"
-                        aria-current={current(`${base}/settings`)}
-                    >
-                        Settings
-                    </a>
-                </li>
-                <li class="grow"></li>
-
-                <ThemeToggle />
-
-                <li
-                    class="flex-row justify-center items-center text-base collapse sm:visible"
+            <li class="w-14 h-14 p-2">
+                <a href="{base}/" aria-current={current(`${base}/`)}>
+                    {@html favicon}
+                </a>
+            </li>
+            <li>
+                <a href="{base}/graph" aria-current={current(`${base}/graph`)}>
+                    Graph
+                </a>
+            </li>
+            <li>
+                <a
+                    href="{base}/settings"
+                    aria-current={current(`${base}/settings`)}
                 >
-                    Version: {version}
-                </li>
-            </ul>
-        </header>
+                    Settings
+                </a>
+            </li>
+            <li class="grow"></li>
 
-        <slot />
-    </div>
+            <ThemeToggle />
+
+            <li
+                class="flex-row justify-center items-center text-base collapse sm:visible"
+            >
+                Version: {version}
+            </li>
+        </ul>
+    </header>
+
+    <slot />
 </main>
 
 <style lang="postcss">
