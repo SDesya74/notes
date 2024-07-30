@@ -1,10 +1,10 @@
 <script lang="ts">
-    import Message from '$lib/components/Message.svelte'
+    import MessageComponent from '$lib/components/Message.svelte'
     import {
         createMessage,
         messages,
         type Id,
-        type IMessage,
+        type Message,
     } from '$lib/index.svelte'
     import { page } from '$app/stores'
     import { goto } from '$app/navigation'
@@ -35,13 +35,17 @@
     let currentChat = $derived(messages.chatFrom(leafId!, 15).toReversed())
     let lastId = $derived(messages.untilBranchOrLeaf(leafId!))
 
-    let currEditableMessageId: Id | null = $state(null)
+    let currentEditingMessage: Message | null = $state(null)
     let textInput = $state('')
     // TODO: Make a multiline chat input that grows dynamically
     let textInputElement: HTMLInputElement | null = $state(null)
 
+    function saveMessagesOnLocalStorage() {
+        localStorage.setItem('notes', JSON.stringify(messages.export()))
+    }
+
     function appendMessage() {
-        if (currEditableMessageId) {
+        if (currentEditingMessage) {
             onEditMessage()
             return
         }
@@ -51,7 +55,7 @@
 
         textInput = ''
 
-        localStorage.setItem('notes', JSON.stringify(messages.export()))
+        saveMessagesOnLocalStorage()
 
         let url = $page.url
         url.hash = leafId
@@ -60,7 +64,7 @@
         setTimeout(() => textInputElement!.focus(), 0)
     }
 
-    function deleteMessage(value: IMessage) {
+    function deleteMessage(value: Message) {
         if (messages.isLeaf(value.id)) {
             let id = value.parent ?? messages.lastCreatedAt()!.id
             goto(`${base}/#${id}`)
@@ -70,25 +74,30 @@
     }
 
     function onEditMessage() {
-        if (currEditableMessageId) {
-            messages.edit(currEditableMessageId, textInput)
-            currEditableMessageId = null
-            textInput = ''
-        }
+        if (!currentEditingMessage) return
+
+        messages.edit(currentEditingMessage, textInput)
+
+        saveMessagesOnLocalStorage()
+
+        currentEditingMessage = null
+        textInput = ''
+
+        setTimeout(() => textInputElement?.focus(), 0)
     }
 
-    function focusOnMessage(value: IMessage) {
+    function startEditing(value: Message) {
         textInput = value.data.content
-        currEditableMessageId = value.id
+        currentEditingMessage = value
 
         textInputElement?.focus()
     }
 
-    function onEditMessageByKeyDown(e: KeyboardEvent) {
+    function startEditByShortcut(e: KeyboardEvent) {
         if (e.key === 'ArrowUp') {
             const lastMessage = messages.get(lastId)
             if (lastMessage) {
-                focusOnMessage(lastMessage)
+                startEditing(lastMessage)
             }
         }
     }
@@ -99,10 +108,10 @@
     <div class="h-screen flex flex-col justify-end overflow-y-auto p-4 pb-36">
         {#if currentChat}
             {#each currentChat as message}
-                <Message
+                <MessageComponent
                     value={message}
                     ondelete={deleteMessage}
-                    onedit={focusOnMessage}
+                    onedit={startEditing}
                     isLast={message.id === lastId}
                 />
             {/each}
@@ -129,7 +138,9 @@
     </div>
 
     <footer
-        class={`dark:text-white ${currEditableMessageId ? 'bg-orange-100' : 'bg-slate-100'} dark:bg-slate-700 border-t border-gray-300 dark:border-slate-600 p-4 absolute left-0 bottom-0 w-full`}
+        class:bg-orange-100={currentEditingMessage}
+        class:bg-slate-100={!currentEditingMessage}
+        class="dark:text-white dark:bg-slate-700 border-t border-gray-300 dark:border-slate-600 p-4 absolute left-0 bottom-0 w-full"
     >
         <form
             class="flex items-center container mx-auto"
@@ -137,7 +148,7 @@
         >
             <input
                 type="text"
-                onkeydown={onEditMessageByKeyDown}
+                onkeydown={startEditByShortcut}
                 bind:this={textInputElement}
                 bind:value={textInput}
                 placeholder="Type a message..."

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { base } from '$app/paths'
-    import { type IMessage } from '$lib/index.svelte'
+    import { type Message } from '$lib/index.svelte'
     import Markdown from 'svelte-exmarkdown'
     import { gfmPlugin } from 'svelte-exmarkdown/gfm'
 
@@ -12,8 +12,8 @@
         onedit,
         isLast,
     }: {
-        value: IMessage
-        ondelete: (message: IMessage) => void
+        value: Message
+        ondelete: (message: Message) => void
         isLast: boolean
     } = $props()
 
