@@ -12,8 +12,12 @@
 
     let canvas: HTMLDivElement | null = $state(null)
     onMount(() => {
-        canvas?.addEventListener('wheel', onWheel, { passive: false })
-        return () => canvas?.removeEventListener('wheel', onWheel)
+        canvas?.addEventListener('wheel', onWheel, { passive: false });
+        canvas?.addEventListener('touchmove', onTouchMove, { passive: false });
+        return () => {
+            canvas?.removeEventListener('wheel', onWheel);
+            canvas?.removeEventListener('touchmove', onTouchMove);
+        };
     })
 
     let dragProject: ((event: any) => void) | null = $state(null)
@@ -56,13 +60,13 @@
     }
 
     function onCanvasMouseDown(event: any) {
-        if (event.target === event.currentTarget) {
-            isDraggingCanvas = true
+        if (event.button === 1) {
+            isDraggingCanvas = true;
         }
     }
 
     function onWheel(event: WheelEvent) {
-        const { deltaX, deltaY, clientX, clientY, ctrlKey, altKey } = event
+        const { deltaX, deltaY, clientX, clientY, ctrlKey, shiftKey } = event
         if (ctrlKey) {
             // scale
             event.preventDefault()
@@ -84,7 +88,7 @@
             canvasOffset.y = mouseY - ratio * (mouseY - canvasOffset.y)
 
             scale.current = changedScale
-        } else if (altKey) {
+        } else if (shiftKey) {
             // scroll horizontally
             scrollCanvas({
                 x: -deltaY,
@@ -98,6 +102,26 @@
             })
         }
     }
+
+    let touchStartPos = { x: 0, y: 0 };
+    let isPinching = false;
+
+    function onTouchStart(event: TouchEvent) {
+        if (event.touches.length === 1) {
+            touchStartPos = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+        }
+    }
+
+    function onTouchMove(event: TouchEvent) {
+        event.preventDefault();
+        if (!isPinching && event.touches.length === 1) {
+            const dx = event.touches[0].clientX - touchStartPos.x;
+            const dy = event.touches[0].clientY - touchStartPos.y;
+            touchStartPos = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+            scrollCanvas({ x: dx, y: dy });
+        }
+    }
+
 </script>
 
 <div class="flex flex-col px-1 py-0.5 flex-grow">
@@ -106,6 +130,7 @@
         onmousemove={onMouseMove}
         onmouseup={onMouseUp}
         onmousedown={onCanvasMouseDown}
+        ontouchstart={onTouchStart}
         role="button"
         tabindex="0"
         bind:this={canvas}
