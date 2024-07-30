@@ -1,16 +1,19 @@
 <script lang="ts">
     import { base } from '$app/paths'
-    import { type Message } from '$lib/index.svelte'
+    import { type IMessage } from '$lib/index.svelte'
     import Markdown from 'svelte-exmarkdown'
     import { gfmPlugin } from 'svelte-exmarkdown/gfm'
+
+    import edit from '$lib/assets/controlIcons/editIcon.svg?raw'
 
     let {
         value,
         ondelete,
+        onedit,
         isLast,
     }: {
-        value: Message
-        ondelete: (message: Message) => void
+        value: IMessage
+        ondelete: (message: IMessage) => void
         isLast: boolean
     } = $props()
 
@@ -60,6 +63,14 @@
                     /></g
                 ></svg
             >
+        </button>
+
+        <button
+            class="cursor-pointer w-4 h-4 stroke-current"
+            onclick={() => onedit(value)}
+            title="Edit a note"
+        >
+            {@html edit}
         </button>
     </div>
 </div>

@@ -1,6 +1,11 @@
 <script lang="ts">
     import Message from '$lib/components/Message.svelte'
-    import { createMessage, messages, type Id } from '$lib/index.svelte'
+    import {
+        createMessage,
+        messages,
+        type Id,
+        type IMessage,
+    } from '$lib/index.svelte'
     import { page } from '$app/stores'
     import { goto } from '$app/navigation'
     import { browser } from '$app/environment'
@@ -30,11 +35,17 @@
     let currentChat = $derived(messages.chatFrom(leafId!, 15).toReversed())
     let lastId = $derived(messages.untilBranchOrLeaf(leafId!))
 
+    let currEditableMessageId: Id | null = $state(null)
     let textInput = $state('')
     // TODO: Make a multiline chat input that grows dynamically
     let textInputElement: HTMLInputElement | null = $state(null)
 
     function appendMessage() {
+        if (currEditableMessageId) {
+            onEditMessage()
+            return
+        }
+
         let message = createMessage(textInput)
         leafId = messages.add(leafId, message)
 
@@ -49,13 +60,37 @@
         setTimeout(() => textInputElement!.focus(), 0)
     }
 
-    function deleteMessage(value: Message) {
+    function deleteMessage(value: IMessage) {
         if (messages.isLeaf(value.id)) {
             let id = value.parent ?? messages.lastCreatedAt()!.id
             goto(`${base}/#${id}`)
         }
         messages.delete(value.id)
         localStorage.setItem('notes', JSON.stringify(messages.export()))
+    }
+
+    function onEditMessage() {
+        if (currEditableMessageId) {
+            messages.edit(currEditableMessageId, textInput)
+            currEditableMessageId = null
+            textInput = ''
+        }
+    }
+
+    function focusOnMessage(value: IMessage) {
+        textInput = value.data.content
+        currEditableMessageId = value.id
+
+        textInputElement?.focus()
+    }
+
+    function onEditMessageByKeyDown(e: KeyboardEvent) {
+        if (e.key === 'ArrowUp') {
+            const lastMessage = messages.get(lastId)
+            if (lastMessage) {
+                focusOnMessage(lastMessage)
+            }
+        }
     }
 </script>
 
@@ -67,6 +102,7 @@
                 <Message
                     value={message}
                     ondelete={deleteMessage}
+                    onedit={focusOnMessage}
                     isLast={message.id === lastId}
                 />
             {/each}
@@ -93,7 +129,7 @@
     </div>
 
     <footer
-        class="dark:text-white bg-slate-100 dark:bg-slate-700 border-t border-gray-300 dark:border-slate-600 p-4 absolute left-0 bottom-0 w-full"
+        class={`dark:text-white ${currEditableMessageId ? 'bg-orange-100' : 'bg-slate-100'} dark:bg-slate-700 border-t border-gray-300 dark:border-slate-600 p-4 absolute left-0 bottom-0 w-full`}
     >
         <form
             class="flex items-center container mx-auto"
@@ -101,6 +137,7 @@
         >
             <input
                 type="text"
+                onkeydown={onEditMessageByKeyDown}
                 bind:this={textInputElement}
                 bind:value={textInput}
                 placeholder="Type a message..."

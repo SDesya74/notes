@@ -32,7 +32,7 @@ export type MessageData = {
     }
 }
 
-export type Message = {
+export interface IMessage {
     data: MessageData
 
     id: Id
@@ -49,11 +49,11 @@ export function createMessage(text: string): MessageData {
 }
 
 class Messages {
-    inner: { [id: Id]: Message } = $state({})
+    inner: { [id: Id]: IMessage } = $state({})
 
     constructor(private id_provider: IdProvider = NANOID_PROVIDER) {}
 
-    get(id: Id): Message | null {
+    get(id: Id): IMessage | null {
         return this.inner[id] ?? null
     }
 
@@ -90,6 +90,13 @@ class Messages {
         delete this.inner[id]
     }
 
+    edit(id: Id, newContent: string) {
+        const message = this.inner[id]
+        if (!message) return
+
+        message.data.content = newContent
+    }
+
     get length(): number {
         return Object.keys(this.inner).length
     }
@@ -108,11 +115,11 @@ class Messages {
         return this.inner[id].children.size === 0
     }
 
-    chatFrom(id: Id, count: number = 20): Message[] {
+    chatFrom(id: Id, count: number = 20): IMessage[] {
         const out = []
         let iter_id: Id | null = id
         while (count-- > 0) {
-            const message: Message = this.inner[iter_id!]
+            const message: IMessage = this.inner[iter_id!]
             if (!message) break
             iter_id = message.parent
             out.push(message)
@@ -125,7 +132,7 @@ class Messages {
         let iter_id: Id | null = id
 
         while (iter_id) {
-            const message: Message = this.inner[iter_id!]
+            const message: IMessage = this.inner[iter_id!]
             if (!message) break
             if (message.children.size !== 1) break
             const firstChild = message.children.values().next().value
@@ -135,7 +142,7 @@ class Messages {
         return iter_id!
     }
 
-    lastCreatedAt(): Message | null {
+    lastCreatedAt(): IMessage | null {
         const msgs = Object.values(this.inner)
 
         if (msgs.length < 1) {
