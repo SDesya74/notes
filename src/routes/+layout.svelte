@@ -21,7 +21,7 @@
 </script>
 
 <main
-    class="flex flex-col h-screen overflow-hidden bg-slate-100 dark:bg-slate-800"
+    class="flex flex-col h-screen bg-slate-100 dark:bg-slate-800 overflow-hidden"
 >
     <header class="bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-100">
         <ul

@@ -10,6 +10,7 @@
 
     function importGraph() {
         messages.import(JSON.parse(raw))
+        localStorage.setItem('notes', JSON.stringify(messages.export()))
     }
 
     function deleteGraph() {
