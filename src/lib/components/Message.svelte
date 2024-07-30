@@ -4,6 +4,9 @@
     import Markdown from 'svelte-exmarkdown'
     import { gfmPlugin } from 'svelte-exmarkdown/gfm'
 
+    import branchIcon from '$lib/assets/controlIcons/branchIcon.svg?raw'
+    import trashIcon from '$lib/assets/controlIcons/trashIcon.svg?raw'
+
     let {
         value,
         ondelete,
@@ -37,11 +40,7 @@
                 href="{base}/#{value.id}"
                 title="Create a new thread"
             >
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                    ><path
-                        d="M7.5 2a3.5 3.5 0 0 1 .99 6.86 5.5 5.5 0 0 0 5.26 3.89h.33a3.5 3.5 0 1 1 0 1.5h-.33a6.99 6.99 0 0 1-5.5-2.67v3.5a3.5 3.5 0 1 1-1.5 0V8.92A3.5 3.5 0 0 1 7.5 2zm0 14.5a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10-5a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-10-8a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"
-                    /></svg
-                >
+                {@html branchIcon}
             </a>
         {/if}
         <button
@@ -49,17 +48,7 @@
             onclick={() => ondelete(value)}
             title="Delete a note"
         >
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                ><g
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    ><path
-                        d="M3 6h18M5 6v14c0 1.1.9 2 2 2h10a2 2 0 0 0 2-2V6M8 6V4c0-1.1.9-2 2-2h4a2 2 0 0 1 2 2v2M14 11v6M10 11v6"
-                    /></g
-                ></svg
-            >
+            {@html trashIcon}
         </button>
     </div>
 </div>
