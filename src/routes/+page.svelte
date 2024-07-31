@@ -35,7 +35,29 @@
     let textInputElement: HTMLInputElement | null = $state(null)
 
     function appendMessage() {
-        let message = createMessage(textInput)
+        let parentMessageId = $page.url.hash.substring(1)
+        let parentMessage = messages.get(parentMessageId)
+        let { x, y } = parentMessage?.data.transform || { x: 0, y: 0 }
+       
+        let allMessages = messages.export().messages;
+        let allMessagesId = Object.keys(allMessages);
+        allMessagesId.forEach((id) => {
+            let message = messages.get(id);
+            if(message?.data.transform.y === y + 100){
+                x = message?.data.transform.x + 150;
+            }
+            
+        });
+        
+        // let parentChildren = parentMessage?.children || []
+        // if (parentChildren.size > 0) {
+        //     let arrayChildren = Array.from(parentChildren)
+        //     let lastChildId = arrayChildren[arrayChildren.length - 1]
+        //     let lastChild = messages.get(lastChildId)
+        //     x = lastChild!.data.transform.x + 150
+        // }
+
+        let message = createMessage(textInput, x, y + 100)
         leafId = messages.add(leafId, message)
 
         textInput = ''

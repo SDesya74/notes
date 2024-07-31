@@ -40,12 +40,12 @@ export type Message = {
     children: Set<Id>
 }
 
-export function createMessage(text: string): MessageData {
+export function createMessage(text: string, x: number, y: number): MessageData {
     // TODO: Choose transform for a new message
     return {
         content: text,
         createdAt: Date.now(),
-        transform: { x: 0, y: 0, width: 100, height: 40 },
+        transform: { x: x, y: y, width: 100, height: 40 },
     }
 }
 
